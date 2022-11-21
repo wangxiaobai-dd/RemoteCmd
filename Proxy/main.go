@@ -32,7 +32,7 @@ func init() {
 func main() {
 	router := gin.Default()
 	router.GET("/:name", proxy)
-	router.Run(":8080")
+	router.Run(":7000")
 }
 
 func proxy(c *gin.Context) {
