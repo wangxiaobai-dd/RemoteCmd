@@ -1,13 +1,14 @@
 package main
 
 import (
+	"fmt"
 	"os"
 )
 
 var headers = [...]string{"cmd.h", "cmd2.h"}
 
 func main() {
-
+	fmt.Println("worker")
 	for _, header := range headers {
 		dealHeaderFile(header)
 	}
