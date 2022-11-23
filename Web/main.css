@@ -1,4 +1,26 @@
-.btn-middle {
+.middle {
     margin: 0 auto;
     display: block
+}
+
+.py-2 {
+    margin-bottom: 10px;
+}
+
+.msgparam {
+    margin-top: 10px;
+
+}
+
+.msgparamtype{
+    width: 100px;
+}
+
+.alert{
+    margin-top: 20px;
+    margin-bottom: 15px;
+    width: 300px;
+}
+.title{
+    margin-bottom: 30px;
 }

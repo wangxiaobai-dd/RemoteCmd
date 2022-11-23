@@ -8,23 +8,24 @@
 </head>
 <body>
 
-<div class=".container-fluid">
+<div class=".container-fluid text-center">
     <div class="row">
-        <div class="container-fluid my-4 text-center">
+        <div class="container-fluid my-4">
             <h2>Mock Message</h2>
         </div>
     </div>
-    <div class="row">
-        <div class="col mx-5 bg-warning text-center bg-opacity-25">
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>
-                        服务器
-                    </th>
-                </tr>
-                </thead>
+    <div class="row ">
+        <div class="col mx-5 ">
+
+            <table class="table ">
+                <div class="title py-2 bg-warning">服务器</div>
                 <tbody>
+                <tr>
+                    <td>
+                        1
+                    </td>
+
+                </tr>
                 <tr>
                     <td>
                         1
@@ -34,26 +35,43 @@
             </table>
         </div>
         <div class="col ">
-            <div class="row">
-                <div class="col-8">
+            <div class="title py-2 bg-warning ">消息</div>
+            <div class="row ">
+                <div class="col-8 ">
                     <input type="text" class="form-control text-center " placeholder="输入消息名" name="cmd">
                 </div>
                 <div class="col">
                     <button type="button" class="btn btn-outline-primary">查找消息</button>
                 </div>
             </div>
-
-            <button type="button" class="btn btn-outline-primary btn-middle" >发送消息</button>
+            <div class="row">
+                <div class="alert alert-success middle">
+                    查找成功，消息号：
+                    <span> 175 140 </span>
+                </div>
+                <!--div class="alert alert-danger">
+                    查找失败
+                </div-->
+            </div>
+            <div class="row">
+                <div class="col-10 middle">
+                    <div class="input-group msgparam">
+                        <span class="input-group-text msgparamtype">BYTE</span>
+                        <input type="text" class="form-control">
+                    </div>
+                </div>
+                <div class="col-10 middle">
+                    <div class="input-group msgparam ">
+                        <span class="input-group-text msgparamtype">DWORD</span>
+                        <input type="text" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <button type="button" class="btn btn-outline-primary middle my-5">发送消息</button>
         </div>
-        <div class="col mx-5 bg-warning text-center">
+        <div class="col mx-5 ">
             <table class="table">
-                <thead>
-                <tr>
-                    <th>
-                        在线角色
-                    </th>
-                </tr>
-                </thead>
+                <div class="title py-2 bg-warning">在线角色</div>
                 <tbody>
                 <tr>
                     <td>
