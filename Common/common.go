@@ -7,10 +7,10 @@ const (
 )
 
 type Server struct {
-	Ip        string
-	Name      string
-	Path      string
-	Users     []string
+	Ip        string   `json:"ip"`
+	Name      string   `json:"name"`
+	Path      string   `json:"path"`
+	Users     []string `json:"users"`
 	CheckTime int64
 }
 

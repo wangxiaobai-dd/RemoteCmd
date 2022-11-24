@@ -3,6 +3,7 @@ package main
 import (
 	"RemoteCmd/Common"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 	"log"
 	"net/http/httputil"
 	"net/url"
@@ -40,17 +41,28 @@ func main() {
 }
 
 func postServer(c *gin.Context) {
+	//buffer, _ := ioutil.ReadAll(c.Request.Body)
+	//c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(buffer))
+
 	server := Server{}
-	server.Ip = c.PostForm("ip")
-	server.Name = c.PostForm("name")
-	server.Path = c.PostForm("path")
-	//server.Users = c.PostFormArray("users")
+	/*
+		server.Ip = c.PostForm("ip")
+		server.Name = c.PostForm("name")
+		server.Path = c.PostForm("path")
+		server.Users = c.PostFormArray("users") */
+
+	err := c.ShouldBindBodyWith(&server, binding.JSON)
+	if err != nil {
+		log.Println("bind body err:", err)
+		return
+	}
 	server.CheckTime = time.Now().Unix() + 2*60
 	lock.Lock()
 	serverMap[server.Name] = server
 	lock.Unlock()
 	log.Println("postServer:", server.Info())
 
+	// c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(buffer))
 	forward(c)
 }
 
