@@ -2,9 +2,11 @@ package main
 
 import (
 	"RemoteCmd/Common"
+	"bytes"
 	"github.com/gin-gonic/gin"
+	"io/ioutil"
 	"log"
-	"net/http"
+	"net/http/httputil"
 )
 
 type Server struct {
@@ -13,30 +15,48 @@ type Server struct {
 
 var serverMap = make(map[string]Server)
 
-func init() {
-
-}
-
 func main() {
 	router := gin.Default()
-	router.POST("/postServer", postServer)
-	router.DELETE("/deleteServer", deleteServer)
+	router.POST("/server/sync", serverSync)
+	router.DELETE("/server/delete/:serverName", serverDelete)
+	router.GET("/message/search/:serverName/:message", messageSearch)
 	router.Run(Common.ProxyPort)
 }
 
-func postServer(c *gin.Context) {
-
+func serverSync(c *gin.Context) {
 	server := Server{}
-	server.Ip = c.PostForm("ip")
-	server.Name = c.PostForm("name")
-	server.Path = c.PostForm("path")
-	server.Users = c.PostFormArray("users")
+	err := c.ShouldBind(&server)
+	if err != nil {
+		log.Println("postServer,err:", err)
+		return
+	}
 	serverMap[server.Name] = server
-	log.Println("postServer:", server.Info())
-	c.String(http.StatusOK, server.Info())
+	log.Println("serverSync:", server.Info())
 }
 
-func deleteServer(c *gin.Context) {
-	delete(serverMap, c.PostForm("name"))
-	log.Println("deleteServer:", c.PostForm("name"))
+func serverDelete(c *gin.Context) {
+	serverName := c.Param("serverName")
+	delete(serverMap, serverName)
+	log.Println("deleteServer:", serverName, "len:", len(serverMap))
+}
+
+func messageSearch(c *gin.Context) {
+
+	buffer, _ := ioutil.ReadAll(c.Request.Body)
+	c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(buffer))
+
+	serverName := c.Param("serverName")
+	server, ok := serverMap[serverName]
+	if !ok {
+		log.Println("messageSearch, no server:", serverName)
+		return
+	}
+
+	c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(buffer))
+	forwardWorker(&server, c)
+}
+
+func forwardWorker(server *Server, c *gin.Context) {
+	worker := httputil.NewSingleHostReverseProxy(server.Url())
+	worker.ServeHTTP(c.Writer, c.Request)
 }

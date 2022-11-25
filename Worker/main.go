@@ -2,9 +2,11 @@ package main
 
 import (
 	"RemoteCmd/Common"
+	"bytes"
 	"github.com/gin-gonic/gin"
-	"github.com/gin-gonic/gin/binding"
+	"io/ioutil"
 	"log"
+	"net/http"
 	"net/http/httputil"
 	"net/url"
 	"os"
@@ -16,13 +18,12 @@ type Server struct {
 	Common.Server
 }
 
-var headers = [...]string{"cmd.h", "cmd2.h"}
 var serverMap = make(map[string]Server)
 var lock sync.Mutex
 var proxy *httputil.ReverseProxy
 
 func init() {
-	remote, err := url.Parse("http://" + Common.ProxyIp + Common.ProxyPort)
+	remote, err := url.Parse(Common.ProxyUrl)
 	if err != nil {
 		log.Println(err)
 		return
@@ -33,25 +34,19 @@ func init() {
 func main() {
 
 	router := gin.Default()
-	router.POST("/postServer", postServer)
-
+	router.POST("/server/sync", serverSync)
+	router.GET("/message/search/:serverName/:message", messageSearch)
 	go checkServer()
 
 	router.Run(Common.WorkerPort)
 }
 
-func postServer(c *gin.Context) {
-	//buffer, _ := ioutil.ReadAll(c.Request.Body)
-	//c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(buffer))
+func serverSync(c *gin.Context) {
+	buffer, _ := ioutil.ReadAll(c.Request.Body)
+	c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(buffer))
 
 	server := Server{}
-	/*
-		server.Ip = c.PostForm("ip")
-		server.Name = c.PostForm("name")
-		server.Path = c.PostForm("path")
-		server.Users = c.PostFormArray("users") */
-
-	err := c.ShouldBindBodyWith(&server, binding.JSON)
+	err := c.ShouldBind(&server)
 	if err != nil {
 		log.Println("bind body err:", err)
 		return
@@ -62,17 +57,28 @@ func postServer(c *gin.Context) {
 	lock.Unlock()
 	log.Println("postServer:", server.Info())
 
-	// c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(buffer))
-	forward(c)
+	c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(buffer))
+
+	forwardProxy(c)
 }
 
-func forward(c *gin.Context) {
+func messageSearch(c *gin.Context) {
+	serverName := c.Param("serverName")
+	message := c.Param("message")
+	log.Println("messageSearch,", serverName, "message:", message)
+
+	// do search
+
+	c.String(http.StatusOK, "OK")
+}
+
+func forwardProxy(c *gin.Context) {
 	if proxy != nil {
 		proxy.ServeHTTP(c.Writer, c.Request)
 	}
 }
 
-func dealHeaderFile(f string) {
+func searchHeaderFile(f string) {
 	_, err := os.ReadFile(f)
 	if err != nil {
 		return
@@ -80,8 +86,7 @@ func dealHeaderFile(f string) {
 }
 
 func checkServer() {
-	ticker := time.NewTicker(time.Minute)
-	defer ticker.Stop()
+	ticker := time.NewTicker(time.Second * 30)
 	go func() {
 		for {
 			<-ticker.C
@@ -89,11 +94,16 @@ func checkServer() {
 			now := time.Now().Unix()
 			for name, server := range serverMap {
 				if server.CheckTime < now {
-					log.Println("checkServer,delete", name)
+					log.Println("checkServer,delete", server.Info())
+					deleteServerProxy(name)
 					delete(serverMap, name)
 				}
 			}
 			lock.Unlock()
 		}
 	}()
+}
+
+func deleteServerProxy(name string) {
+	Common.SendRequest("DELETE", Common.ProxyUrl+"/server/delete/"+name, nil)
 }
