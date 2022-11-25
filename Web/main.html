@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="main.css" rel="stylesheet">
+    <title>Title</title>
+</head>
+<body>
+
+<div class=".container-fluid text-center">
+    <div class="row">
+        <div class="container-fluid my-4">
+            <h2>Mock Message</h2>
+        </div>
+    </div>
+    <div class="row ">
+        <div class="col mx-5 ">
+            <div class="title py-2">服务器</div>
+            <div class="select-btn-div ">
+                <button type="button" class="btn  btn-light select-btn btn-outline-secondary">Apple</button>
+                <button type="button" class="btn  btn-light select-btn btn-outline-secondary">Samsung</button>
+                <button type="button" class="btn  btn-light select-btn btn-outline-secondary">Sony</button>
+            </div>
+
+        </div>
+        <div class="col ">
+            <div class="title py-2">消息</div>
+            <div class="row ">
+                <div class="col-8 ">
+                    <input type="text" class="form-control text-center " placeholder="输入消息名" name="cmd">
+                </div>
+                <div class="col">
+                    <button type="button" class="btn btn-outline-primary">查找消息</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="alert alert-success middle">
+                    查找成功，消息号：
+                    <span> 175 140 </span>
+                </div>
+                <!--div class="alert alert-danger">
+                    查找失败
+                </div-->
+            </div>
+            <div class="row">
+                <div class="col-10 middle">
+                    <div class="input-group msg-param">
+                        <span class="input-group-text msg-param-type">BYTE</span>
+                        <input type="text" class="form-control">
+                    </div>
+                </div>
+                <div class="col-10 middle">
+                    <div class="input-group msg-param ">
+                        <span class="input-group-text msg-param-type">DWORD</span>
+                        <input type="text" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <button type="button" class="btn btn-outline-primary middle my-5">发送消息</button>
+        </div>
+        <div class="col mx-5 ">
+            <div class="title py-2">在线角色</div>
+            <div class="select-btn-div">
+                <button type="button" class="btn  btn-light select-btn btn-outline-secondary">1001</button>
+                <button type="button" class="btn  btn-light select-btn btn-outline-secondary">紫色的花语</button>
+                <button type="button" class="btn  btn-light select-btn btn-outline-secondary">Sony</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

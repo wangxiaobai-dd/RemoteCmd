@@ -1,0 +1,36 @@
+.middle {
+    margin: 0 auto;
+    display: block
+}
+
+.py-2 {
+    margin-bottom: 10px;
+}
+
+.msg-param {
+    margin-top: 10px;
+
+}
+
+.msg-param-type{
+    width: 100px;
+}
+
+.alert{
+    margin-top: 20px;
+    margin-bottom: 15px;
+    width: 300px;
+}
+.title{
+    margin-bottom: 30px;
+    background-color: #c1e16c;
+}
+
+.select-btn{
+    width: 70%;
+    margin-top: 10px;
+}
+
+.select-btn-div{
+
+}
