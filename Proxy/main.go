@@ -2,18 +2,36 @@ package main
 
 import (
 	"RemoteCmd/Common"
-	"bytes"
+	"encoding/json"
 	"github.com/gin-gonic/gin"
-	"io/ioutil"
 	"log"
 	"net/http/httputil"
+	"net/url"
+	"os"
+	"strings"
 )
+
+var serverMap = make(map[string]Server)
+var configMap = make(map[string]interface{})
 
 type Server struct {
 	Common.Server
 }
 
-var serverMap = make(map[string]Server)
+func init() {
+	data, err := os.ReadFile("Proxy/cmd.json")
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	err = json.Unmarshal(data, &configMap)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	log.Println("configMap:", configMap)
+	log.Println("messageFiles:", getMessageFiles())
+}
 
 func main() {
 	router := gin.Default()
@@ -30,6 +48,9 @@ func serverSync(c *gin.Context) {
 		log.Println("postServer,err:", err)
 		return
 	}
+	if len(server.Name) == 0 {
+		return
+	}
 	serverMap[server.Name] = server
 	log.Println("serverSync:", server.Info())
 }
@@ -42,9 +63,6 @@ func serverDelete(c *gin.Context) {
 
 func messageSearch(c *gin.Context) {
 
-	buffer, _ := ioutil.ReadAll(c.Request.Body)
-	c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(buffer))
-
 	serverName := c.Param("serverName")
 	server, ok := serverMap[serverName]
 	if !ok {
@@ -52,11 +70,34 @@ func messageSearch(c *gin.Context) {
 		return
 	}
 
-	c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(buffer))
-	forwardWorker(&server, c)
+	request := url.Values{}
+	request.Set("serverName", serverName)
+	request.Set("message", c.Param("message"))
+	for _, v := range getMessageFiles() {
+		request.Add("messageFiles", v)
+	}
+
+	Common.SendRequestGin(c, "POST", server.UrlString()+"/message/search", strings.NewReader(request.Encode()))
+}
+
+func messageSend() {
+
 }
 
 func forwardWorker(server *Server, c *gin.Context) {
-	worker := httputil.NewSingleHostReverseProxy(server.Url())
+	remote, err := url.Parse(server.UrlString())
+	if err != nil {
+		return
+	}
+	worker := httputil.NewSingleHostReverseProxy(remote)
 	worker.ServeHTTP(c.Writer, c.Request)
+}
+
+func getMessageFiles() []string {
+	messageFiles, _ := configMap["MESSAGE_FILE"]
+	var ret []string
+	for _, v := range messageFiles.([]interface{}) {
+		ret = append(ret, v.(string))
+	}
+	return ret
 }

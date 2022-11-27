@@ -2,9 +2,10 @@ package Common
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"io"
+	"io/ioutil"
 	"net/http"
-	"net/url"
 )
 
 const (
@@ -31,9 +32,8 @@ func (s *Server) Info() string {
 	return ret
 }
 
-func (s *Server) Url() *url.URL {
-	remote, _ := url.Parse("http://" + s.Ip + WorkerPort)
-	return remote
+func (s *Server) UrlString() string {
+	return "http://" + s.Ip + WorkerPort
 }
 
 func SendRequest(method string, url string, body io.Reader) {
@@ -49,4 +49,23 @@ func SendRequest(method string, url string, body io.Reader) {
 		fmt.Println(err)
 		return
 	}
+}
+
+func SendRequestGin(c *gin.Context, method string, url string, body io.Reader) {
+	client := &http.Client{}
+	req, err := http.NewRequest(method, url, body)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer resp.Body.Close()
+	bodyRet, _ := ioutil.ReadAll(resp.Body)
+
+	c.String(http.StatusOK, string(bodyRet))
 }

@@ -1,4 +1,10 @@
-MSG_BEGIN(REQ_TEST, 1, stReqTest){};
-BYTE type = 0; // xx
-BYTE pos = 0;   // xxx
-MSG_END
+    MSG_BEGIN(REQ_TEST, 10 , stReqTest){};
+    BYTE type = 0; // xx
+    DWORD pos = 0;   // xxx
+    char playerName[3] = {0};
+    MSG_END
+
+    MSG_BEGIN(REQ_TEST2, 2, stReqTest2){};
+    BYTE type = 0; // xx
+    BYTE pos = 0;   // xxx
+    MSG_END

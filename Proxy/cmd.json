@@ -1,4 +1,8 @@
 {
-  "MSG_BEGIN_6": "130",
-  "MSG_BEGIN_7": "140"
+  "MSG_BEGIN": "130",
+  "MSG_BEGIN_7": "140",
+  "MESSAGE_FILE": [
+    "cmd.h",
+    "cmd2.h"
+  ]
 }

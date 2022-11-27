@@ -14,10 +14,6 @@ import (
 	"time"
 )
 
-type Server struct {
-	Common.Server
-}
-
 var serverMap = make(map[string]Server)
 var lock sync.Mutex
 var proxy *httputil.ReverseProxy
@@ -35,7 +31,7 @@ func main() {
 
 	router := gin.Default()
 	router.POST("/server/sync", serverSync)
-	router.GET("/message/search/:serverName/:message", messageSearch)
+	router.POST("/message/search", messageSearch)
 	go checkServer()
 
 	router.Run(Common.WorkerPort)
@@ -63,13 +59,22 @@ func serverSync(c *gin.Context) {
 }
 
 func messageSearch(c *gin.Context) {
-	serverName := c.Param("serverName")
-	message := c.Param("message")
+	serverName := c.PostForm("serverName")
+	message := c.PostForm("message")
 	log.Println("messageSearch,", serverName, "message:", message)
+	log.Println(c.Request.Header.Get("Content-Type"))
 
-	// do search
+	server, ok := serverMap[serverName]
+	if !ok {
+		c.String(http.StatusNotFound, "NO SERVER")
+		return
+	}
+	log.Println("messageFiles", c.PostFormArray("messageFiles"))
 
-	c.String(http.StatusOK, "OK")
+	server.searchMessage(message, c.PostFormArray("messageFiles"))
+
+	c.String(http.StatusOK, "NIHAO")
+
 }
 
 func forwardProxy(c *gin.Context) {
