@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"log"
+	"net/http"
 	"net/http/httputil"
 	"net/url"
 	"os"
@@ -38,6 +39,7 @@ func main() {
 	router.POST("/server/sync", serverSync)
 	router.DELETE("/server/delete/:serverName", serverDelete)
 	router.GET("/message/search/:serverName/:message", messageSearch)
+	router.POST("/message/send", messageSend)
 	router.Run(Common.ProxyPort)
 }
 
@@ -80,7 +82,18 @@ func messageSearch(c *gin.Context) {
 	Common.SendRequestGin(c, "POST", server.UrlString()+"/message/search", strings.NewReader(request.Encode()))
 }
 
-func messageSend() {
+func messageSend(c *gin.Context) {
+	server, ok := serverMap[c.PostForm("serverName")]
+	if !ok {
+		c.JSON(http.StatusOK, gin.H{"status": "NoServer"})
+		return
+	}
+	c.PostForm("userName")
+	c.PostForm("cmd")
+	c.PostForm("para")
+	c.PostForm("paramCount")
+
+	Common.SendRequestGin(c, "POST", server.UrlString()+"/message/send", nil)
 
 }
 

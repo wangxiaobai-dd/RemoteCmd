@@ -71,10 +71,9 @@ func messageSearch(c *gin.Context) {
 	}
 	log.Println("messageFiles", c.PostFormArray("messageFiles"))
 
-	server.searchMessage(message, c.PostFormArray("messageFiles"))
+	response := server.searchMessage(message, c.PostFormArray("messageFiles"))
 
-	c.String(http.StatusOK, "NIHAO")
-
+	c.JSON(http.StatusOK, response)
 }
 
 func forwardProxy(c *gin.Context) {
