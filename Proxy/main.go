@@ -83,17 +83,16 @@ func messageSearch(c *gin.Context) {
 }
 
 func messageSend(c *gin.Context) {
+
 	server, ok := serverMap[c.PostForm("serverName")]
 	if !ok {
 		c.JSON(http.StatusOK, gin.H{"status": "NoServer"})
 		return
 	}
-	c.PostForm("userName")
-	c.PostForm("cmd")
-	c.PostForm("para")
-	c.PostForm("paramCount")
+	paramCount := c.PostForm("paramCount")
+	log.Println("messageSend:", server.Info(), paramCount)
 
-	Common.SendRequestGin(c, "POST", server.UrlString()+"/message/send", nil)
+	// todo send http request or redis
 
 }
 

@@ -32,6 +32,7 @@ func main() {
 	router := gin.Default()
 	router.POST("/server/sync", serverSync)
 	router.POST("/message/search", messageSearch)
+	//router.POST("/message/send", messageSend)
 	go checkServer()
 
 	router.Run(Common.WorkerPort)
@@ -74,6 +75,10 @@ func messageSearch(c *gin.Context) {
 	response := server.searchMessage(message, c.PostFormArray("messageFiles"))
 
 	c.JSON(http.StatusOK, response)
+}
+
+func messageSend(c *gin.Context) {
+
 }
 
 func forwardProxy(c *gin.Context) {
