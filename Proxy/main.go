@@ -15,9 +15,7 @@ import (
 var serverMap = make(map[string]Server)
 var configMap = make(map[string]interface{})
 
-type Server struct {
-	Common.Server
-}
+const RedisKey = ":mock.message"
 
 func init() {
 	data, err := os.ReadFile("Proxy/cmd.json")
@@ -50,10 +48,10 @@ func serverSync(c *gin.Context) {
 		log.Println("postServer,err:", err)
 		return
 	}
-	if len(server.Name) == 0 {
+	if len(server.ServerName) == 0 {
 		return
 	}
-	serverMap[server.Name] = server
+	serverMap[server.ServerName] = server
 	log.Println("serverSync:", server.Info())
 }
 
@@ -84,16 +82,21 @@ func messageSearch(c *gin.Context) {
 
 func messageSend(c *gin.Context) {
 
-	server, ok := serverMap[c.PostForm("serverName")]
+	body := make(map[string]interface{})
+	data, _ := c.GetRawData()
+	err := json.Unmarshal(data, &body)
+	if err != nil {
+		log.Println(err)
+	}
+	server, ok := serverMap[body[("serverName")].(string)]
 	if !ok {
 		c.JSON(http.StatusOK, gin.H{"status": "NoServer"})
 		return
 	}
-	paramCount := c.PostForm("paramCount")
-	log.Println("messageSend:", server.Info(), paramCount)
-
-	// todo send http request or redis
-
+	log.Println("messageSend:", server.Info())
+	rdb := server.getRedisDb()
+	c.JSON(http.StatusOK, body)
+	log.Println(rdb.RPush(server.Path+RedisKey, body).Result())
 }
 
 func forwardWorker(server *Server, c *gin.Context) {

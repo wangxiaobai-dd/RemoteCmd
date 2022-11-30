@@ -17,15 +17,15 @@ const (
 var ProxyUrl = "http://" + ProxyIp + ProxyPort
 
 type Server struct {
-	Ip        string   `form:"ip" json:"ip"`
-	Name      string   `form:"name" json:"name"`
-	Path      string   `form:"path" json:"path"`
-	Users     []string `form:"users" json:"users"`
-	CheckTime int64
+	Ip         string   `form:"ip" json:"ip"`
+	ServerName string   `form:"serverName" json:"serverName"`
+	Path       string   `form:"path" json:"path"`
+	Users      []string `form:"users" json:"users"`
+	CheckTime  int64
 }
 
 func (s *Server) Info() string {
-	ret := "Name:" + s.Name + ",Ip:" + s.Ip + ",Path:" + s.Path + ",Users:"
+	ret := "ServerName:" + s.ServerName + ",Ip:" + s.Ip + ",Path:" + s.Path + ",Users:"
 	for _, user := range s.Users {
 		ret = ret + user + "|"
 	}

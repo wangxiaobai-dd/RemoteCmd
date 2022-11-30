@@ -9,7 +9,6 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"net/url"
-	"os"
 	"sync"
 	"time"
 )
@@ -32,7 +31,6 @@ func main() {
 	router := gin.Default()
 	router.POST("/server/sync", serverSync)
 	router.POST("/message/search", messageSearch)
-	//router.POST("/message/send", messageSend)
 	go checkServer()
 
 	router.Run(Common.WorkerPort)
@@ -50,7 +48,7 @@ func serverSync(c *gin.Context) {
 	}
 	server.CheckTime = time.Now().Unix() + 2*60
 	lock.Lock()
-	serverMap[server.Name] = server
+	serverMap[server.ServerName] = server
 	lock.Unlock()
 	log.Println("postServer:", server.Info())
 
@@ -77,20 +75,9 @@ func messageSearch(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-func messageSend(c *gin.Context) {
-
-}
-
 func forwardProxy(c *gin.Context) {
 	if proxy != nil {
 		proxy.ServeHTTP(c.Writer, c.Request)
-	}
-}
-
-func searchHeaderFile(f string) {
-	_, err := os.ReadFile(f)
-	if err != nil {
-		return
 	}
 }
 
