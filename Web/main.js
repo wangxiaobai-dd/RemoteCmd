@@ -1,0 +1,2 @@
+
+var serverListVue = new Vue()

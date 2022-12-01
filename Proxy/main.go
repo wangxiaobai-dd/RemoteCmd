@@ -15,10 +15,14 @@ import (
 var serverMap = make(map[string]Server)
 var configMap = make(map[string]interface{})
 
-const RedisKey = ":mock.message"
+const (
+	RedisKey = ":mock.message"
+	CmdJson  = "Proxy/cmd.json"
+	MainHtml = "Web/main.html"
+)
 
 func init() {
-	data, err := os.ReadFile("Proxy/cmd.json")
+	data, err := os.ReadFile(CmdJson)
 	if err != nil {
 		log.Println(err)
 		return
@@ -34,11 +38,21 @@ func init() {
 
 func main() {
 	router := gin.Default()
+
+	router.Delims("[[", "]]")
+	router.LoadHTMLFiles(MainHtml)
+
+	router.GET("/", pageShow)
 	router.POST("/server/sync", serverSync)
 	router.DELETE("/server/delete/:serverName", serverDelete)
 	router.GET("/message/search/:serverName/:message", messageSearch)
 	router.POST("/message/send", messageSend)
+
 	router.Run(Common.ProxyPort)
+}
+
+func pageShow(c *gin.Context) {
+	c.HTML(http.StatusOK, MainHtml, gin.H{})
 }
 
 func serverSync(c *gin.Context) {
@@ -99,15 +113,6 @@ func messageSend(c *gin.Context) {
 	log.Println(rdb.RPush(server.Path+RedisKey, body).Result())
 }
 
-func forwardWorker(server *Server, c *gin.Context) {
-	remote, err := url.Parse(server.UrlString())
-	if err != nil {
-		return
-	}
-	worker := httputil.NewSingleHostReverseProxy(remote)
-	worker.ServeHTTP(c.Writer, c.Request)
-}
-
 func getMessageFiles() []string {
 	messageFiles, _ := configMap["MESSAGE_FILE"]
 	var ret []string
@@ -115,4 +120,13 @@ func getMessageFiles() []string {
 		ret = append(ret, v.(string))
 	}
 	return ret
+}
+
+func forwardWorker(server *Server, c *gin.Context) {
+	remote, err := url.Parse(server.UrlString())
+	if err != nil {
+		return
+	}
+	worker := httputil.NewSingleHostReverseProxy(remote)
+	worker.ServeHTTP(c.Writer, c.Request)
 }

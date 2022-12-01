@@ -75,12 +75,6 @@ func messageSearch(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-func forwardProxy(c *gin.Context) {
-	if proxy != nil {
-		proxy.ServeHTTP(c.Writer, c.Request)
-	}
-}
-
 func checkServer() {
 	ticker := time.NewTicker(time.Second * 30)
 	go func() {
@@ -102,4 +96,10 @@ func checkServer() {
 
 func deleteServerProxy(name string) {
 	Common.SendRequest("DELETE", Common.ProxyUrl+"/server/delete/"+name, nil)
+}
+
+func forwardProxy(c *gin.Context) {
+	if proxy != nil {
+		proxy.ServeHTTP(c.Writer, c.Request)
+	}
 }
