@@ -18,7 +18,7 @@ var configMap = make(map[string]interface{})
 const (
 	RedisKey = ":mock.message"
 	CmdJson  = "Proxy/cmd.json"
-	MainHtml = "Web/main.html"
+	FrontDir = "Web/"
 )
 
 func init() {
@@ -40,7 +40,9 @@ func main() {
 	router := gin.Default()
 
 	router.Delims("[[", "]]")
-	router.LoadHTMLFiles(MainHtml)
+	router.StaticFS("/css", http.Dir("Web/css"))
+	router.StaticFS("/js", http.Dir("Web/js"))
+	router.LoadHTMLFiles(FrontDir + "main.html")
 
 	router.GET("/", pageShow)
 	router.POST("/server/sync", serverSync)
@@ -52,7 +54,7 @@ func main() {
 }
 
 func pageShow(c *gin.Context) {
-	c.HTML(http.StatusOK, MainHtml, gin.H{})
+	c.HTML(http.StatusOK, "main.html", gin.H{})
 }
 
 func serverSync(c *gin.Context) {
@@ -100,7 +102,8 @@ func messageSend(c *gin.Context) {
 	data, _ := c.GetRawData()
 	err := json.Unmarshal(data, &body)
 	if err != nil {
-		log.Println(err)
+		log.Println("messageSend,err:", err)
+		return
 	}
 	server, ok := serverMap[body[("serverName")].(string)]
 	if !ok {
