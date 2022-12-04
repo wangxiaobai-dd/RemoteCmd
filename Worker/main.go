@@ -46,7 +46,7 @@ func serverSync(c *gin.Context) {
 		log.Println("bind body err:", err)
 		return
 	}
-	server.CheckTime = time.Now().Unix() + 2*60
+	server.CheckTime = time.Now().Unix() + 2*600
 	lock.Lock()
 	serverMap[server.ServerName] = server
 	lock.Unlock()

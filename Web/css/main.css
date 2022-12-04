@@ -26,11 +26,17 @@
     background-color: #c1e16c;
 }
 
-.select-btn{
+.list-btn{
     width: 70%;
     margin-top: 10px;
 }
 
-.select-btn-div{
 
+.list-btn-div{
+
+}
+
+.list-btn:hover, .selectbtn{
+    background-color: #377eea;
+    color: #ffffff;
 }

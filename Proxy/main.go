@@ -45,6 +45,8 @@ func main() {
 	router.LoadHTMLFiles(FrontDir + "main.html")
 
 	router.GET("/", pageShow)
+	router.GET("/server", getServerList)
+
 	router.POST("/server/sync", serverSync)
 	router.DELETE("/server/delete/:serverName", serverDelete)
 	router.GET("/message/search/:serverName/:message", messageSearch)
@@ -54,7 +56,12 @@ func main() {
 }
 
 func pageShow(c *gin.Context) {
+
 	c.HTML(http.StatusOK, "main.html", gin.H{})
+}
+
+func getServerList(c *gin.Context) {
+	// todo server list
 }
 
 func serverSync(c *gin.Context) {
