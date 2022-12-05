@@ -4,7 +4,7 @@ const message = {
             messageName:"",
             cmdNumber:"178",
             paraNumber:"140",
-            searchResult:0  // 1:success 2:fail
+            searchState:0  // 1:searching 2:success 3:fail
         }
     },
     methods: {

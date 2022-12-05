@@ -36,11 +36,11 @@
                 </div>
             </div>
             <div class="row">
-                <div class="alert alert-success middle" v-if="searchResult === 1">
+                <div class="alert alert-success middle" v-if="searchResult === 2">
                     查找成功，消息号：
-                    <span> {{cmdNumber}}</span> <span > {{paraNumber}}</span>
+                    <span> {{cmdNumber}}</span> <span> {{paraNumber}}</span>
                 </div>
-                <div class="alert alert-danger middle" v-if="searchResult === 2">
+                <div class="alert alert-danger middle" v-if="searchResult === 3">
                     查找失败
                 </div>
             </div>
@@ -64,7 +64,8 @@
             <div class="title py-2">在线角色</div>
             <div class="list-btn-div" v-for="user in users">
                 <button type="button" class="btn  btn-light list-btn btn-outline-secondary" v-on:click="chooseUser"
-                        :class="{ selectbtn :selectUser === user}" :value="user">{{user}}</button>
+                        :class="{ selectbtn :selectUser === user}" :value="user">{{user}}
+                </button>
             </div>
         </div>
     </div>
