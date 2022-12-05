@@ -45,7 +45,8 @@ func main() {
 	router.LoadHTMLFiles(FrontDir + "main.html")
 
 	router.GET("/", pageShow)
-	router.GET("/server", getServerList)
+	router.GET("/server/showList", serverShowList)
+	router.GET("/user/showList/", userShowList)
 
 	router.POST("/server/sync", serverSync)
 	router.DELETE("/server/delete/:serverName", serverDelete)
@@ -56,12 +57,30 @@ func main() {
 }
 
 func pageShow(c *gin.Context) {
-
 	c.HTML(http.StatusOK, "main.html", gin.H{})
 }
 
-func getServerList(c *gin.Context) {
-	// todo server list
+func serverShowList(c *gin.Context) {
+	var response []string
+	for serverName, _ := range serverMap {
+		response = append(response, serverName)
+	}
+
+	c.JSON(http.StatusOK, response)
+}
+
+func userShowList(c *gin.Context) {
+	serverName, _ := c.GetQuery("serverName")
+	log.Println("userShowList:", serverName)
+	server, ok := serverMap[serverName]
+	if !ok {
+		return
+	}
+	var response []string
+	for _, user := range server.Users {
+		response = append(response, user)
+	}
+	c.JSON(http.StatusOK, response)
 }
 
 func serverSync(c *gin.Context) {

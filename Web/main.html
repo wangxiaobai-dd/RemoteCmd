@@ -25,24 +25,24 @@
                 </button>
             </div>
         </div>
-        <div class="col">
+        <div class="col" id="message">
             <div class="title py-2">消息</div>
             <div class="row ">
                 <div class="col-8 ">
-                    <input type="text" class="form-control text-center " placeholder="输入消息名" name="cmd">
+                    <input type="text" class="form-control text-center " placeholder="输入消息名" v-model="messageName">
                 </div>
                 <div class="col">
-                    <button type="button" class="btn btn-outline-primary">查找消息</button>
+                    <button type="button" class="btn btn-outline-primary" v-on:click="searchMessage">查找消息</button>
                 </div>
             </div>
             <div class="row">
-                <div class="alert alert-success middle">
+                <div class="alert alert-success middle" v-if="searchResult === 1">
                     查找成功，消息号：
-                    <span> 175 140 </span>
+                    <span> {{cmdNumber}}</span> <span > {{paraNumber}}</span>
                 </div>
-                <!--div class="alert alert-danger">
+                <div class="alert alert-danger middle" v-if="searchResult === 2">
                     查找失败
-                </div-->
+                </div>
             </div>
             <div class="row">
                 <div class="col-10 middle">
@@ -63,7 +63,8 @@
         <div class="col mx-5" id="userList">
             <div class="title py-2">在线角色</div>
             <div class="list-btn-div" v-for="user in users">
-                <button type="button" class="btn  btn-light list-btn btn-outline-secondary">{{user}}</button>
+                <button type="button" class="btn  btn-light list-btn btn-outline-secondary" v-on:click="chooseUser"
+                        :class="{ selectbtn :selectUser === user}" :value="user">{{user}}</button>
             </div>
         </div>
     </div>
