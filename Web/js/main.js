@@ -1,18 +1,46 @@
 const message = {
     data() {
         return {
-            messageName:"",
-            cmdNumber:"178",
-            paraNumber:"140",
-            searchState:0,  // 1:searching 2:success 3:fail
-            searchBtnTip:"查找消息"
+            messageName: "",
+            cmdNumber: "178",
+            paraNumber: "140",
+            searchState: 0,  // 1:searching 2:success 3:fail
+            searchBtnTip: "查找消息"
         }
     },
     methods: {
-        searchMessage(event) {
+        searchMessage() {
+            if (this.searchState === 1)
+                return
+            if (this.messageName === "" || this.messageName.length < 2) {
+                console.log(this.messageName.length)
+                alert("请输入消息名")
+                return
+            }
+            if (vServer.selectServer === "") {
+                alert("请选择服务器")
+                return
+            }
             console.log(this.messageName)
             this.searchState = 1
             this.searchBtnTip = "查找中..."
+
+            axios
+                .get('/message/search', {
+                    params: {"serverName": vServer.selectServer, "message": this.messageName}
+                })
+                .then(response => {
+                    if(response.data == null){
+                        this.searchState = 3
+                        return
+                    }
+                    //todo 解析返回值 
+                    console.log(response.data)
+                })
+                .catch(function (error) {
+                    this.searchState = 0
+                    console.log(error);
+                });
         }
     }
 }
@@ -54,7 +82,7 @@ const serverList = {
     },
     mounted() {
         this.getServerList()
-        this.timer = setInterval(this.getServerList, 2000)
+        this.timer = setInterval(this.getServerList, 20000)
     }
 }
 

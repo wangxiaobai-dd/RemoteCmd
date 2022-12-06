@@ -32,8 +32,12 @@
 }
 
 
-.list-btn-div{
-
+.disablebtn{
+    disabled:true;
+    background-color: #377eea;
+    color: #ffffff;
+    pointer-events: none;
+    opacity: 0.6;
 }
 
 .list-btn:hover, .selectbtn{

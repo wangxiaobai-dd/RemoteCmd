@@ -19,9 +19,9 @@
     <div class="row ">
         <div class="col mx-5" id="serverList">
             <div class="title py-2">服务器</div>
-            <div class="list-btn-div" v-for="server in servers">
+            <div v-for="server in servers">
                 <button type="button" class="btn  btn-light list-btn btn-outline-secondary" v-on:click="chooseServer"
-                        :class="{ selectbtn :selectServer === server}" :value="server">{{server}}
+                        :class="{ selectbtn : selectServer === server}" :value="server">{{server}}
                 </button>
             </div>
         </div>
@@ -32,7 +32,9 @@
                     <input type="text" class="form-control text-center " placeholder="输入消息名" v-model="messageName">
                 </div>
                 <div class="col">
-                    <button type="button" class="btn btn-outline-primary" v-on:click="searchMessage">{{searchBtnTip}}</button>
+                    <button type="button" class="btn btn-outline-primary" v-on:click="searchMessage"
+                            :class="{disablebtn : searchState === 1}">{{searchBtnTip}}
+                    </button>
                 </div>
             </div>
             <div class="row">
@@ -44,6 +46,7 @@
                     查找失败
                 </div>
             </div>
+            <div v-if="searchState === 2">
             <div class="row">
                 <div class="col-10 middle">
                     <div class="input-group msg-param">
@@ -51,18 +54,13 @@
                         <input type="text" class="form-control">
                     </div>
                 </div>
-                <div class="col-10 middle">
-                    <div class="input-group msg-param ">
-                        <span class="input-group-text msg-param-type">DWORD</span>
-                        <input type="text" class="form-control">
-                    </div>
-                </div>
             </div>
             <button type="button" class="btn btn-outline-primary middle my-5">发送消息</button>
+            </div>
         </div>
         <div class="col mx-5" id="userList">
             <div class="title py-2">在线角色</div>
-            <div class="list-btn-div" v-for="user in users">
+            <div v-for="user in users">
                 <button type="button" class="btn  btn-light list-btn btn-outline-secondary" v-on:click="chooseUser"
                         :class="{ selectbtn :selectUser === user}" :value="user">{{user}}
                 </button>

@@ -50,7 +50,7 @@ func main() {
 
 	router.POST("/server/sync", serverSync)
 	router.DELETE("/server/delete/:serverName", serverDelete)
-	router.GET("/message/search/:serverName/:message", messageSearch)
+	router.GET("/message/search/", messageSearch)
 	router.POST("/message/send", messageSend)
 
 	router.Run(Common.ProxyPort)
@@ -105,7 +105,8 @@ func serverDelete(c *gin.Context) {
 
 func messageSearch(c *gin.Context) {
 
-	serverName := c.Param("serverName")
+	serverName, _ := c.GetQuery("serverName")
+	message, _ := c.GetQuery("message")
 	server, ok := serverMap[serverName]
 	if !ok {
 		log.Println("messageSearch, no server:", serverName)
@@ -114,10 +115,11 @@ func messageSearch(c *gin.Context) {
 
 	request := url.Values{}
 	request.Set("serverName", serverName)
-	request.Set("message", c.Param("message"))
+	request.Set("message", message)
 	for _, v := range getMessageFiles() {
 		request.Add("messageFiles", v)
 	}
+	log.Println("messageSearch:", serverName, message)
 
 	Common.SendRequestGin(c, "POST", server.UrlString()+"/message/search", strings.NewReader(request.Encode()))
 }
