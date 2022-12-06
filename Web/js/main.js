@@ -4,12 +4,15 @@ const message = {
             messageName:"",
             cmdNumber:"178",
             paraNumber:"140",
-            searchState:0  // 1:searching 2:success 3:fail
+            searchState:0,  // 1:searching 2:success 3:fail
+            searchBtnTip:"查找消息"
         }
     },
     methods: {
-        searchMessage() {
+        searchMessage(event) {
             console.log(this.messageName)
+            this.searchState = 1
+            this.searchBtnTip = "查找中..."
         }
     }
 }

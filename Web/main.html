@@ -32,15 +32,15 @@
                     <input type="text" class="form-control text-center " placeholder="输入消息名" v-model="messageName">
                 </div>
                 <div class="col">
-                    <button type="button" class="btn btn-outline-primary" v-on:click="searchMessage">查找消息</button>
+                    <button type="button" class="btn btn-outline-primary" v-on:click="searchMessage">{{searchBtnTip}}</button>
                 </div>
             </div>
             <div class="row">
-                <div class="alert alert-success middle" v-if="searchResult === 2">
+                <div class="alert alert-success middle" v-if="searchState === 2">
                     查找成功，消息号：
                     <span> {{cmdNumber}}</span> <span> {{paraNumber}}</span>
                 </div>
-                <div class="alert alert-danger middle" v-if="searchResult === 3">
+                <div class="alert alert-danger middle" v-if="searchState === 3">
                     查找失败
                 </div>
             </div>
