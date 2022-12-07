@@ -13,7 +13,7 @@ import (
 var regParam *regexp.Regexp
 
 func init() {
-	regParam = regexp.MustCompile("(BYTE|WORD|DWORD|char)\\s*(\\w+)\\[?([a-zA-Z0-9]*)\\]?")
+	regParam = regexp.MustCompile("(BYTE|WORD|DWORD|QWORD|char)\\s*(\\w+)\\[?([a-zA-Z0-9]*)\\]?")
 }
 
 type Server struct {
