@@ -1,9 +1,10 @@
+
 const message = {
     data() {
         return {
             messageName: "",
-            cmdNumber: "178",
-            paraNumber: "140",
+            cmdNumber: "0",
+            paraNumber: "0",
             searchState: 0,  // 1:searching 2:success 3:fail
             searchBtnTip: "查找消息"
         }
@@ -12,9 +13,8 @@ const message = {
         searchMessage() {
             if (this.searchState === 1)
                 return
-            if (this.messageName === "" || this.messageName.length < 2) {
-                console.log(this.messageName.length)
-                alert("请输入消息名")
+            if (this.messageName === "" || this.messageName.length < 0) {
+                alert("请输入有效消息名")
                 return
             }
             if (vServer.selectServer === "") {
@@ -30,12 +30,23 @@ const message = {
                     params: {"serverName": vServer.selectServer, "message": this.messageName}
                 })
                 .then(response => {
-                    if(response.data == null){
+
+                    this.searchBtnTip = "查找消息"
+
+                    if(response.data.cmdFlag === undefined){
                         this.searchState = 3
-                        return
+                    }
+                    else{
+                        this.searchState = 2
+                        this.cmdNumber = response.data.cmdNumber
+                        this.paraNumber = response.data.paraNumber
+                        
+                        let paraCountm = 0 ;
                     }
                     //todo 解析返回值 
                     console.log(response.data)
+
+
                 })
                 .catch(function (error) {
                     this.searchState = 0

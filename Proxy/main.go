@@ -121,7 +121,7 @@ func messageSearch(c *gin.Context) {
 	}
 	log.Println("messageSearch:", serverName, message)
 
-	Common.SendRequestGin(c, "POST", server.UrlString()+"/message/search", strings.NewReader(request.Encode()))
+	Common.SendRequestGin(c, "POST", server.UrlString()+"/message/search", strings.NewReader(request.Encode()), requestRetCBFunc)
 }
 
 func messageSend(c *gin.Context) {
@@ -160,4 +160,18 @@ func forwardWorker(server *Server, c *gin.Context) {
 	}
 	worker := httputil.NewSingleHostReverseProxy(remote)
 	worker.ServeHTTP(c.Writer, c.Request)
+}
+
+func requestRetCBFunc(reqUrl string, bodyRet *[]byte) {
+
+	if strings.Contains(reqUrl, "message/search") {
+		retMap := make(map[string]interface{})
+		json.Unmarshal(*bodyRet, &retMap)
+
+		cmdNumber, ok := configMap[retMap["cmdFlag"].(string)]
+		if ok {
+			retMap["cmdNumber"] = cmdNumber.(string)
+			*bodyRet, _ = json.Marshal(retMap)
+		}
+	}
 }

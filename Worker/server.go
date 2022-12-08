@@ -47,8 +47,8 @@ func (s *Server) searchMessage(message string, messageFiles []string) map[string
 
 				if len(ret) == 3 {
 					log.Println("response set")
-					response["cmd"] = ret[1]
-					response["para"] = ret[2]
+					response["cmdFlag"] = ret[1]
+					response["paraNumber"] = ret[2]
 				}
 			}
 			if paramCount > 0 {

@@ -51,9 +51,11 @@ func SendRequest(method string, url string, body io.Reader) {
 	}
 }
 
-func SendRequestGin(c *gin.Context, method string, url string, body io.Reader) {
+type RequestRetFunc func(url string, bodyRet *[]byte)
+
+func SendRequestGin(c *gin.Context, method string, reqUrl string, body io.Reader, retFunc RequestRetFunc) {
 	client := &http.Client{}
-	req, err := http.NewRequest(method, url, body)
+	req, err := http.NewRequest(method, reqUrl, body)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -67,5 +69,6 @@ func SendRequestGin(c *gin.Context, method string, url string, body io.Reader) {
 	defer resp.Body.Close()
 	bodyRet, _ := ioutil.ReadAll(resp.Body)
 
+	retFunc(reqUrl, &bodyRet)
 	c.String(http.StatusOK, string(bodyRet))
 }
