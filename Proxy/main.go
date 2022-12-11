@@ -139,6 +139,8 @@ func messageSend(c *gin.Context) {
 		return
 	}
 	log.Println("messageSend:", server.Info())
+	log.Println("messageSend:", body)
+
 	rdb := server.getRedisDb()
 	c.JSON(http.StatusOK, body)
 	log.Println(rdb.RPush(server.Path+RedisKey, body).Result())
@@ -153,6 +155,24 @@ func getMessageFiles() []string {
 	return ret
 }
 
+func requestRetCBFunc(reqUrl string, bodyRet *[]byte) {
+
+	if strings.Contains(reqUrl, "message/search") {
+		retMap := make(map[string]interface{})
+		json.Unmarshal(*bodyRet, &retMap)
+
+		cmdFlag, ok := retMap["cmdFlag"]
+		if !ok {
+			return
+		}
+		cmdNumber, ok := configMap[cmdFlag.(string)]
+		if ok {
+			retMap["cmdNumber"] = cmdNumber.(string)
+			*bodyRet, _ = json.Marshal(retMap)
+		}
+	}
+}
+
 func forwardWorker(server *Server, c *gin.Context) {
 	remote, err := url.Parse(server.UrlString())
 	if err != nil {
@@ -160,18 +180,4 @@ func forwardWorker(server *Server, c *gin.Context) {
 	}
 	worker := httputil.NewSingleHostReverseProxy(remote)
 	worker.ServeHTTP(c.Writer, c.Request)
-}
-
-func requestRetCBFunc(reqUrl string, bodyRet *[]byte) {
-
-	if strings.Contains(reqUrl, "message/search") {
-		retMap := make(map[string]interface{})
-		json.Unmarshal(*bodyRet, &retMap)
-
-		cmdNumber, ok := configMap[retMap["cmdFlag"].(string)]
-		if ok {
-			retMap["cmdNumber"] = cmdNumber.(string)
-			*bodyRet, _ = json.Marshal(retMap)
-		}
-	}
 }

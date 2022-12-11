@@ -1,12 +1,12 @@
-
 const message = {
     data() {
         return {
-            messageName: "",
+            messageName: "stReqTest",
             cmdNumber: "0",
             paraNumber: "0",
             searchState: 0,  // 1:searching 2:success 3:fail
-            searchBtnTip: "查找消息"
+            searchBtnTip: "查找消息",
+            params: []
         }
     },
     methods: {
@@ -32,26 +32,70 @@ const message = {
                 .then(response => {
 
                     this.searchBtnTip = "查找消息"
-
-                    if(response.data.cmdFlag === undefined){
+                    if (response.data.cmdFlag === undefined) {
                         this.searchState = 3
-                    }
-                    else{
+                    } else {
                         this.searchState = 2
                         this.cmdNumber = response.data.cmdNumber
                         this.paraNumber = response.data.paraNumber
-                        
-                        let paraCountm = 0 ;
+                        this.params = response.data.params
+                        if (this.params != null) {
+                            this.params.forEach((item) => {
+                                console.log(item)
+                                let arrayLen = 0
+                                if (item[2].includes("MAX_USERNAME")) {
+                                    arrayLen = 30
+                                } else {
+
+                                }
+                                if (item[2].includes("+") && item[2].includes("1")) {
+                                    arrayLen += 1
+                                }
+                                if (arrayLen) {
+                                    item[2] = arrayLen
+                                }
+                            })
+                        }
                     }
                     //todo 解析返回值 
                     console.log(response.data)
-
-
                 })
                 .catch(function (error) {
-                    this.searchState = 0
+                    this.searchBtnTip = "查找消息"
+                    this.searchState = 3
                     console.log(error);
-                });
+                })
+        },
+        sendMessage() {
+            if (this.searchState !== 2) {
+                return
+            }
+            if (vServer.selectServer === "") {
+                alert("请选择服务器")
+                return
+            }
+            if (vUser.selectUser === "") {
+                alert("请选择在线角色")
+                return
+            }
+            console.log(this.params)
+            axios
+                .post('/message/send', {
+                    "serverName": vServer.selectServer,
+                    "user": vUser.selectUser,
+                    "message": this.messageName,
+                    "params": this.params
+                })
+                .then(response => {
+                    if (response.data.status === "NoServer") {
+                        alert("请刷新网页重新发送")
+                    } else {
+                        alert("发送成功")
+                    }
+                })
+                .catch(function (error) {
+                    alert("请刷新网页重新发送")
+                })
         }
     }
 }
@@ -60,7 +104,7 @@ const serverList = {
     data() {
         return {
             servers: [],
-            selectServer: "",
+            selectServer: "4546",
             timer: ""
         }
     },
@@ -93,7 +137,7 @@ const serverList = {
     },
     mounted() {
         this.getServerList()
-        this.timer = setInterval(this.getServerList, 20000)
+        this.timer = setInterval(this.getServerList, 30000)
     }
 }
 
@@ -101,7 +145,7 @@ const userList = {
     data() {
         return {
             users: [],
-            selectUser: "",
+            selectUser: "1001",
             timer: ""
         }
     },
@@ -137,10 +181,12 @@ const userList = {
         }
     },
     mounted() {
-        this.timer = setInterval(this.getUserList, 20000)
+        this.timer = setInterval(this.getUserList, 30000)
     }
 }
 
 vServer = Vue.createApp(serverList).mount('#serverList')
 vUser = Vue.createApp(userList).mount('#userList')
 vMessage = Vue.createApp(message).mount('#message')
+
+

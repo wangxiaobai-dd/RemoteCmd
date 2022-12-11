@@ -13,7 +13,19 @@
 }
 
 .msg-param-type{
-    width: 100px;
+    text-align:center;
+    width: 25%;
+    display: inline-block;
+}
+
+.msg-param-name{
+    color: #e37480;
+    font-weight: bold;
+}
+
+.msg-param-input{
+    text-align:center;
+    display: inline-block;
 }
 
 .alert{

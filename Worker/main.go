@@ -65,7 +65,6 @@ func messageSearch(c *gin.Context) {
 
 	server, ok := serverMap[serverName]
 	if !ok {
-		c.String(http.StatusNotFound, "NO SERVER")
 		return
 	}
 	log.Println("messageFiles", c.PostFormArray("messageFiles"))

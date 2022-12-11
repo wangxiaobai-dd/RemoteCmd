@@ -1,7 +1,7 @@
     MSG_BEGIN(REQ_TEST, 10 , stReqTest){};
     BYTE type = 0; // xx
     DWORD pos = 0;   // xxx
-    char playerName[3] = {0};
+    char playerName[MAX_USERNAME+1] = {0};
     MSG_END
 
     MSG_BEGIN(REQ_TEST2, 2, stReqTest2){};

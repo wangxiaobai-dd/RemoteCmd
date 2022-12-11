@@ -29,7 +29,7 @@
             <div class="title py-2">消息</div>
             <div class="row ">
                 <div class="col-8 ">
-                    <input type="text" class="form-control text-center " placeholder="输入消息名" v-model="messageName">
+                    <input type="text" class="form-control text-center "  placeholder="输入消息名" v-model="messageName">
                 </div>
                 <div class="col">
                     <button type="button" class="btn btn-outline-primary" v-on:click="searchMessage"
@@ -40,22 +40,24 @@
             <div class="row">
                 <div class="alert alert-success middle" v-if="searchState === 2">
                     查找成功，消息号：
-                    <span> {{cmdNumber}}</span> <span> {{paraNumber}}</span>
+                    <span> {{cmdNumber}}</span>，<span> {{paraNumber}}</span>
                 </div>
                 <div class="alert alert-danger middle" v-if="searchState === 3">
                     查找失败
                 </div>
             </div>
             <div v-if="searchState === 2">
-            <div class="row">
-                <div class="col-10 middle">
+            <div class="row" v-for="param in params">
+                <div class="col-12 middle">
                     <div class="input-group msg-param">
-                        <span class="input-group-text msg-param-type">BYTE</span>
-                        <input type="text" class="form-control">
+                        <span class="input-group-text msg-param-type" v-if="param[2]">{{param[0]}}[{{param[2]}}]</span>
+                        <span class="input-group-text msg-param-type" v-else>{{param[0]}}</span>
+                        <span class="input-group-text msg-param-name">{{param[1]}}</span>
+                        <input type="text" class="form-control msg-param-input" v-model="param[3]">
                     </div>
                 </div>
             </div>
-            <button type="button" class="btn btn-outline-primary middle my-5">发送消息</button>
+            <button type="button" class="btn btn-outline-primary middle my-5" v-on:click="sendMessage">发送消息</button>
             </div>
         </div>
         <div class="col mx-5" id="userList">

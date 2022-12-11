@@ -3,7 +3,6 @@ package main
 import (
 	"RemoteCmd/Common"
 	"bufio"
-	"fmt"
 	"log"
 	"os"
 	"regexp"
@@ -13,7 +12,7 @@ import (
 var regParam *regexp.Regexp
 
 func init() {
-	regParam = regexp.MustCompile("(BYTE|WORD|DWORD|QWORD|char)\\s*(\\w+)\\[?([a-zA-Z0-9]*)\\]?")
+	regParam = regexp.MustCompile("(BYTE|WORD|DWORD|QWORD|char)\\s*(\\w+)\\[?([a-zA-Z0-9_\\+]*)\\]?")
 }
 
 type Server struct {
@@ -26,6 +25,7 @@ func (s *Server) searchMessage(message string, messageFiles []string) map[string
 	regBegin := regexp.MustCompile(str)
 
 	response := make(map[string]interface{})
+	var params []interface{}
 	paramCount := 0
 
 	for _, v := range messageFiles {
@@ -47,7 +47,7 @@ func (s *Server) searchMessage(message string, messageFiles []string) map[string
 
 				if len(ret) == 3 {
 					log.Println("response set")
-					response["cmdFlag"] = ret[1]
+					response["cmdFlag"] = ret[1] // MSG_BEGIN
 					response["paraNumber"] = ret[2]
 				}
 			}
@@ -57,10 +57,8 @@ func (s *Server) searchMessage(message string, messageFiles []string) map[string
 					// ret[1]:paramName ret[2]:type ret[3]:array len
 					log.Println("find param match:", ret[1], ret[2], ret[3])
 
-					paramKey := fmt.Sprint("param", paramCount)
-
-					paramArr := []string{ret[1], ret[2], ret[3]}
-					response[paramKey] = paramArr
+					params = append(params, []string{ret[1], ret[2], ret[3]})
+					response["params"] = params
 					paramCount++
 				}
 				if strings.Contains(line, "MSG_END") {
@@ -74,7 +72,6 @@ func (s *Server) searchMessage(message string, messageFiles []string) map[string
 		f.Close()
 
 		if paramCount > 0 {
-			response["paramCount"] = paramCount - 1
 			break
 		}
 	}
