@@ -6,7 +6,8 @@ const message = {
             paraNumber: "0",
             searchState: 0,  // 1:searching 2:success 3:fail
             searchBtnTip: "查找消息",
-            params: []
+            params: [],
+            sendState:""
         }
     },
     methods: {
@@ -24,7 +25,7 @@ const message = {
             console.log(this.messageName)
             this.searchState = 1
             this.searchBtnTip = "查找中..."
-
+            this.sendState = ""
             axios
                 .get('/message/search', {
                     params: {"serverName": vServer.selectServer, "message": this.messageName}
@@ -90,7 +91,7 @@ const message = {
                     if (response.data.status === "NoServer") {
                         alert("请刷新网页重新发送")
                     } else {
-                        alert("发送成功")
+                        this.sendState = "发送成功"
                     }
                 })
                 .catch(function (error) {

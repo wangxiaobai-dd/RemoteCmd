@@ -57,7 +57,8 @@
                     </div>
                 </div>
             </div>
-            <button type="button" class="btn btn-outline-primary middle my-5" v-on:click="sendMessage">发送消息</button>
+            <button type="button" class="btn btn-outline-primary middle my-5 sendBtn" v-on:click="sendMessage">发送消息</button>
+                <span class="sendState" v-if="sendState">{{sendState}}</span>
             </div>
         </div>
         <div class="col mx-5" id="userList">
