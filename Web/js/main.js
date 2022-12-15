@@ -85,7 +85,9 @@ const message = {
                     "serverName": vServer.selectServer,
                     "user": vUser.selectUser,
                     "message": this.messageName,
-                    "params": this.params
+                    "params": this.params,
+                    "cmdNumber" : vServer.cmdNumber,
+                    "paraNumber" : vServer.paraNumber
                 })
                 .then(response => {
                     if (response.data.status === "NoServer") {
