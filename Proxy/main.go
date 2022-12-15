@@ -40,8 +40,8 @@ func main() {
 	router := gin.Default()
 
 	router.Delims("[[", "]]")
-	router.StaticFS("/css", http.Dir("Web/css"))
-	router.StaticFS("/js", http.Dir("Web/js"))
+	router.StaticFS("/plugin", http.Dir("Web/plugin"))
+	router.StaticFS("/static", http.Dir("Web/static"))
 	router.LoadHTMLFiles(FrontDir + "main.html")
 
 	router.GET("/", pageShow)
