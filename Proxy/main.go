@@ -143,8 +143,7 @@ func messageSend(c *gin.Context) {
 	log.Println("messageSend:", body)
 
 	rdb := server.getRedisDb()
-	c.JSON(http.StatusOK, body)
-	log.Println(rdb.RPush(server.Path+RedisKey, body).Result())
+	log.Println(rdb.RPush(server.Path+RedisKey, data).Result())
 }
 
 func getMessageFiles() []string {

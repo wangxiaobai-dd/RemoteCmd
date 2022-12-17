@@ -12,7 +12,7 @@ type Server struct {
 }
 
 func (s *Server) getRedisDb() *redis.Client {
-	addr := fmt.Sprintf(s.Ip, 6379)
+	addr := fmt.Sprintf(s.Ip+":%d", 6379)
 	rdb := redis.NewClient(&redis.Options{
 		Addr:       addr,
 		Password:   "",
