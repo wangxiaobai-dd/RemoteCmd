@@ -41,7 +41,8 @@ func serverSync(c *gin.Context) {
 	c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(buffer))
 
 	server := Server{}
-	err := c.ShouldBind(&server)
+	err := c.ShouldBindJSON(&server) //json
+	//err := c.ShouldBind(&server) //urlencoded
 	if err != nil {
 		log.Println("bind body err:", err)
 		return
