@@ -2,8 +2,8 @@ const message = {
     data() {
         return {
             messageName: "stReqTest",
-            cmdNumber: "0",
-            paraNumber: "0",
+            cmdNumber: 0,
+            paraNumber: 0,
             searchState: 0,  // 1:searching 2:success 3:fail
             searchBtnTip: "查找消息",
             params: [],
@@ -14,7 +14,7 @@ const message = {
         searchMessage() {
             if (this.searchState === 1)
                 return
-            if (this.messageName === "" || this.messageName.length < 0) {
+            if (this.messageName === "" || this.messageName.length < 4) {
                 alert("请输入有效消息名")
                 return
             }
@@ -86,8 +86,8 @@ const message = {
                     "user": vUser.selectUser,
                     "message": this.messageName,
                     "params": this.params,
-                    "cmdNumber" : vServer.cmdNumber,
-                    "paraNumber" : vServer.paraNumber
+                    "cmdNumber" : parseInt(this.cmdNumber),
+                    "paraNumber" : parseInt(this.paraNumber)
                 })
                 .then(response => {
                     if (response.data.status === "NoServer") {

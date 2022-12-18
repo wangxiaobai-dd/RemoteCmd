@@ -85,8 +85,8 @@ func userShowList(c *gin.Context) {
 
 func serverSync(c *gin.Context) {
 	server := Server{}
-	err := c.ShouldBindJSON(&server) //json
-	//err := c.ShouldBind(&server) //urlencoded
+	//err := c.ShouldBindJSON(&server) //json
+	err := c.ShouldBind(&server) //urlencoded
 	if err != nil {
 		log.Println("postServer,err:", err)
 		return
