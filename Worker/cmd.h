@@ -1,4 +1,4 @@
-    MSG_BEGIN(REQ_TEST, 10 , stReqTest){};
+    MSG_BEGIN(REQ_TEST, 10 , stReqTesat){};
     BYTE type = 0; // xx
     DWORD pos = 0;   // xxx
     char playerName[MAX_USERNAME+1] = {0};
@@ -10,7 +10,7 @@
     MSG_END
 
     const BYTE SEND_IDENTIFY_RUNE_SC = 247;
-    struct stSendIdentifyRune_SC : stFreeMsg_1
+    struct stSendIdentifyRune_SC : public stFreeMsg_1
     {
         stSendIdentifyRune_SC()
         {

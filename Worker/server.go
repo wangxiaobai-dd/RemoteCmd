@@ -26,7 +26,7 @@ func (s *Server) searchMessage(message string, messageFiles []string) map[string
 
 	// form 2
 	form2paramNumReg := regexp.MustCompile("const BYTE [a-zA-Z_]+\\s*=\\s*(\\d+)")
-	form2structReg := regexp.MustCompile("struct\\s*" + message + "\\s*:\\s*([a-zA-Z_\\d]+)")
+	form2structReg := regexp.MustCompile("struct\\s*" + message + "\\s*:\\s*public\\s*([a-zA-Z_\\d]+)")
 	form2endReg := regexp.MustCompile("\\s*};")
 
 	response := make(map[string]interface{})
