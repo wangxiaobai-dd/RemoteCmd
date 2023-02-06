@@ -10,10 +10,13 @@ import (
 	"net/url"
 	"os"
 	"strings"
+	"sync"
 )
 
 var serverMap = make(map[string]Server)
 var configMap = make(map[string]interface{})
+
+var lock sync.Mutex
 
 const (
 	RedisKey = ":mock.message"
@@ -94,13 +97,17 @@ func serverSync(c *gin.Context) {
 	if len(server.ServerName) == 0 {
 		return
 	}
+	lock.Lock()
 	serverMap[server.ServerName] = server
+	lock.Unlock()
 	log.Println("serverSync:", server.Info())
 }
 
 func serverDelete(c *gin.Context) {
 	serverName := c.Param("serverName")
+	lock.Lock()
 	delete(serverMap, serverName)
+	lock.Unlock()
 	log.Println("deleteServer:", serverName, "len:", len(serverMap))
 }
 

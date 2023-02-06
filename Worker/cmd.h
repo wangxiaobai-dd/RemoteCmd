@@ -8,3 +8,16 @@
     BYTE type = 0; // xx
     BYTE pos = 0;   // xxx
     MSG_END
+
+    const BYTE SEND_IDENTIFY_RUNE_SC = 247;
+    struct stSendIdentifyRune_SC : stFreeMsg_1
+    {
+        stSendIdentifyRune_SC()
+        {
+            byParam = SEND_IDENTIFY_RUNE_SC;
+            type = 0;
+            level = 0;
+        }
+        BYTE type;
+        DWORD level;
+    };
