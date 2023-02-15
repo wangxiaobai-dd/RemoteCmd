@@ -54,7 +54,7 @@ func serverSync(c *gin.Context) {
 	log.Println("postServer:", server.Info())
 
 	c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(buffer))
-
+	defer c.Request.Body.Close()
 	forwardProxy(c)
 }
 
